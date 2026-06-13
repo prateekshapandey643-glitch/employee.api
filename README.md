@@ -1,4 +1,4 @@
-Employee API - Spring Boot CRUD Application
+Employee API - Spring Boot CRUD with MongoDB
 
 Overview
 
