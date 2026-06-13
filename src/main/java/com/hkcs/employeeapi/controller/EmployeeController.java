@@ -2,7 +2,9 @@ package com.hkcs.employeeapi.controller;
 
 import com.hkcs.employeeapi.model.Employee;
 import com.hkcs.employeeapi.service.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,36 +17,44 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    // Create Employee
+    // CREATE Employee
     @PostMapping
-    public Employee createEmployee(@RequestBody Employee employee) {
-        return employeeService.saveEmployee(employee);
+    public ResponseEntity<Employee> createEmployee(@Valid @RequestBody Employee employee) {
+        Employee savedEmployee = employeeService.saveEmployee(employee);
+        return ResponseEntity.ok(savedEmployee);
     }
 
-    // Get All Employees
+    // GET ALL Employees
     @GetMapping
-    public List<Employee> getAllEmployees() {
-        return employeeService.getAllEmployees();
+    public ResponseEntity<List<Employee>> getAllEmployees() {
+        List<Employee> employees = employeeService.getAllEmployees();
+        return ResponseEntity.ok(employees);
     }
 
-    // Get Employee By ID
+    // GET Employee by ID
     @GetMapping("/{id}")
-    public Optional<Employee> getEmployeeById(@PathVariable String id) {
-        return employeeService.getEmployeeById(id);
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable String id) {
+
+        Optional<Employee> employee = employeeService.getEmployeeById(id);
+
+        return employee.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    // Update Employee
+    // UPDATE Employee
     @PutMapping("/{id}")
-    public Employee updateEmployee(@PathVariable String id,
-                                   @RequestBody Employee employee) {
+    public ResponseEntity<Employee> updateEmployee(@PathVariable String id,
+                                                   @Valid @RequestBody Employee employee) {
 
-        return employeeService.updateEmployee(id, employee);
+        Employee updatedEmployee = employeeService.updateEmployee(id, employee);
+        return ResponseEntity.ok(updatedEmployee);
     }
 
-    // Delete Employee
+    // DELETE Employee
     @DeleteMapping("/{id}")
-    public String deleteEmployee(@PathVariable String id) {
+    public ResponseEntity<String> deleteEmployee(@PathVariable String id) {
 
-        return employeeService.deleteEmployee(id);
+        String response = employeeService.deleteEmployee(id);
+        return ResponseEntity.ok(response);
     }
 }
